@@ -42,23 +42,30 @@ const LogoIcon = ({ size, color }) => {
   );
 };
 
+const fontSizeMap = {
+  small: 'text-sm',
+  medium: 'text-xl',
+  large: 'text-2xl',
+};
+
 /**
- * @param {LogoProps} props
+ * @param {LogoProps & { fontSize: 'small' | 'medium' | 'large' }} props
  * @returns {React.JSX.Element}
  */
 export const Logo = ({
   variant = 'default',
   size = 28,
   color = 'var(--primary)',
+  fontSize = 'small',
 }) => {
   const logo = <LogoIcon size={size} color={color} />;
 
   return variant === 'default' ? (
     <div className="flex items-center gap-3">
-      {logo}
-      <h2 className='font-bold'>Todo App</h2>
+      <div className="shadow-md rounded-md">{logo}</div>
+      <h2 className={`font-bold ${fontSizeMap[fontSize]}`}>Todo App</h2>
     </div>
   ) : (
-    logo
+    <div className="shadow-md rounded-md">{logo}</div>
   );
 };

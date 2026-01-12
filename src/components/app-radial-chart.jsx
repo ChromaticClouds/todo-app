@@ -1,7 +1,6 @@
 import { ChartContainer } from "@/components/ui/chart.jsx"
-import { Label, PolarRadiusAxis, RadialBar, RadialBarChart } from "recharts"
-
-const PROGRESS = [{ progress: 50, limit: 50 }]
+import { RadialBar, RadialBarChart } from "recharts"
+import { useTasks } from "@/components/tasks-provider.jsx"
 
 const chartConfig = {
   progress: {
@@ -15,23 +14,22 @@ const chartConfig = {
 }
 
 export const AppRadialChart = () => {
+  const tasks = useTasks();
+
+  const completed = tasks.filter(task => task.completed).length;
+  const limit = tasks.length - completed || 0;
+
+  const data = [{ limit, progress: completed }];
+
   return (
     <ChartContainer config={chartConfig} className='w-16 h-16'>
       <RadialBarChart
-        data={PROGRESS}
+        data={data}
         innerRadius={20}
         outerRadius={30}
         startAngle={90}
         endAngle={-270}
       >
-        <RadialBar 
-          dataKey='limit'
-          stackId='a'
-          fill='var(--color-limit)'
-          cornerRadius={20}
-          className='stroke-transparent stroke-2'
-        />
-
         <RadialBar 
           dataKey='progress'
           stackId='a'
@@ -39,6 +37,16 @@ export const AppRadialChart = () => {
           cornerRadius={20}
           className='stroke-transparent stroke-2'
         />
+        
+        <RadialBar 
+          dataKey='limit'
+          stackId='a'
+          fill='var(--color-limit)'
+          cornerRadius={20}
+          className='stroke-transparent stroke-2'
+          isAnimationActive={false}
+        />
+
       </RadialBarChart>
     </ChartContainer>
   )
