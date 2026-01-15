@@ -30,7 +30,7 @@ export const AppMain = () => {
 
   return (
     <main className="flex-1 flex flex-col items-center justify-center">
-      <section className="flex flex-col items-center justify-center w-sm h-full gap-3">
+      <section className="flex flex-col items-center justify-center w-sm h-full gap-3 my-6">
         <div className="my-6">
           <Logo size={42} fontSize="large" />
         </div>

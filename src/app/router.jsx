@@ -7,6 +7,7 @@ import { App } from '@/app/app.jsx';
 import { Home } from '@/pages/home.jsx';
 import { AddTask } from '@/pages/add-task.jsx';
 import { Register } from '@/pages/register.jsx';
+import { Login } from '@/pages/login.jsx';
 
 export const router = createBrowserRouter([
   {
@@ -14,6 +15,7 @@ export const router = createBrowserRouter([
     element: <App />,
     children: [
       { index: true, element: <Home /> },
+      { path: 'login', element: <Login /> },
       { path: 'register', element: <Register /> },
       { path: 'add', element: <AddTask /> },
     ],

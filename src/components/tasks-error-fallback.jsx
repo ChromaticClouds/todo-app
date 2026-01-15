@@ -1,22 +1,26 @@
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
+import { Link } from 'react-router-dom';
 
-export const TasksErrorFallback = ({ resetErrorBoundary }) => {
+export const TasksErrorFallback = () => {
   return (
-    <Alert variant="destructive">
-      <AlertTitle>문제가 발생했습니다</AlertTitle>
-      <AlertDescription className="mt-2">
-        할 일 목록을 불러오지 못했습니다.
-      </AlertDescription>
-
-      <Button
-        variant="outline"
-        size="sm"
-        className="mt-4"
-        onClick={resetErrorBoundary}
-      >
-        다시 시도
-      </Button>
-    </Alert>
+    <div className="flex min-h-dvh flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-md text-center">
+        <div className="mx-auto h-12 w-12 text-primary" />
+        <h1 className="mt-4 text-6xl font-bold tracking-tight text-foreground sm:text-7xl">
+          404
+        </h1>
+        <p className="mt-4 text-lg text-muted-foreground">
+          Oops, it looks like the page you're looking for doesn't exist.
+        </p>
+        <div className="mt-6">
+          <Link
+            to='/register'
+            className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            prefetch="none"
+          >
+            Go to sign up page
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 };

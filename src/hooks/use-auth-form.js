@@ -1,6 +1,9 @@
 // @ts-check
 
+import { api } from '@/services/api.js';
 import { useForm } from '@tanstack/react-form';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import z from 'zod';
 
 /**
@@ -17,6 +20,8 @@ const defaultValues = {
   password: '',
 };
 
+const { email, ...loginValues } = defaultValues;
+
 const registerSchema = z.object({
   email: z.email('Invalid email format.'),
   username: z
@@ -26,21 +31,46 @@ const registerSchema = z.object({
   password: z
     .string()
     .min(8, 'Password length must be at least 8 characters')
-    .max(32, 'Password must be no longer than 16 characters')
+    .max(32, 'Password must be no longer than 32 characters')
     .regex(
-      /[!?@#$%^&*]{2,}/,
-      'Password must contains 2 or more specific characters',
+      /.*[!?@#$%^&*].*[!?@#$%^&*].*/,
+      'Password must contain at least 2 special characters',
     ),
 });
 
+/**
+ * @param {string} path
+ * @param {import('react-router-dom').NavigateFunction} navigate
+ */
+const submitHandler =
+  (path, navigate) =>
+  async ({ value }) => {
+    try {
+      /** @type {import('@/types').ApiResponse<'success'>} */
+      const response = await api.post(path, { json: value }).json();
+
+      if (!response.success)
+        return toast.error(response.message ?? 'Registration failed');
+
+      toast.success(response.message);
+      navigate('/');
+    } catch {
+      toast.error('Netwrok error. Please try again');
+    }
+  };
+
 export const useAuthForm = () => {
-  return useForm({
-    defaultValues,
-    validators: {
-      onChange: registerSchema,
-    },
-    onSubmit: ({ value }) => {
-      console.log(value);
-    },
-  });
+  const navigate = useNavigate();
+
+  return {
+    register: useForm({
+      defaultValues,
+      validators: { onChange: registerSchema },
+      onSubmit: submitHandler('auth/register', navigate),
+    }),
+    login: useForm({
+      defaultValues: loginValues,
+      onSubmit: submitHandler('auth/login', navigate),
+    }),
+  };
 };

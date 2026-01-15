@@ -9,10 +9,18 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card.jsx';
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field.jsx';
 import { Input } from '@/components/ui/input.jsx';
-import { Label } from '@/components/ui/label.jsx';
+import { useAuthForm } from '@/hooks/use-auth-form.js';
 
 export const Register = () => {
+  const { register: form } = useAuthForm();
+
   return (
     <div className="w-screen min-h-screen flex flex-col justify-center items-center">
       <AppHeader />
@@ -21,7 +29,7 @@ export const Register = () => {
           <Logo size={42} fontSize="large" />
         </div>
         <Card className="w-full max-w-sm">
-          <CardHeader className='flex flex-col gap-6'>
+          <CardHeader className="flex flex-col gap-6">
             <p className="text-3xl font-bold">Sign Up</p>
             <div className="flex flex-col gap-2">
               <CardTitle>Sign up your account</CardTitle>
@@ -31,32 +39,98 @@ export const Register = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <form>
+            <form
+              id="register"
+              onSubmit={(e) => {
+                e.preventDefault();
+                form.handleSubmit();
+              }}
+            >
               <div className="flex flex-col gap-6">
-                <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="m@example.com"
-                    required
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="username">Username</Label>
-                  <Input id="username" type="text" required />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input id="password" type="password" required />
-                </div>
+                <FieldGroup>
+                  <form.Field name="email">
+                    {(field) => {
+                      const isInvalid =
+                        field.state.meta.isTouched && !field.state.meta.isValid;
+                      return (
+                        <Field>
+                          <FieldLabel htmlFor={field.name}>Email</FieldLabel>
+                          <Input
+                            id={field.name}
+                            type={field.name}
+                            value={field.state.value}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            placeholder="m@example.com"
+                            required
+                          />
+                          {isInvalid && (
+                            <FieldError errors={field.state.meta.errors} />
+                          )}
+                        </Field>
+                      );
+                    }}
+                  </form.Field>
+                  <form.Field name="username">
+                    {(field) => {
+                      const isInvalid =
+                        field.state.meta.isTouched && !field.state.meta.isValid;
+                      return (
+                        <Field>
+                          <FieldLabel htmlFor={field.name}>Username</FieldLabel>
+                          <Input
+                            id={field.name}
+                            type="text"
+                            value={field.state.value}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            required
+                          />
+                          {isInvalid && (
+                            <FieldError errors={field.state.meta.errors} />
+                          )}
+                        </Field>
+                      );
+                    }}
+                  </form.Field>
+                  <form.Field name="password">
+                    {(field) => {
+                      const isInvalid =
+                        field.state.meta.isTouched && !field.state.meta.isValid;
+                      return (
+                        <Field>
+                          <FieldLabel htmlFor="password">Password</FieldLabel>
+                          <Input
+                            id={field.name}
+                            type={field.name}
+                            value={field.state.value}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            required
+                          />
+                          {isInvalid && (
+                            <FieldError errors={field.state.meta.errors} />
+                          )}
+                        </Field>
+                      );
+                    }}
+                  </form.Field>
+                </FieldGroup>
               </div>
             </form>
           </CardContent>
           <CardFooter className="flex-col gap-2">
-            <Button type="submit" className="w-full">
-              Sign up
-            </Button>
+            <form.Subscribe
+              selector={(state) => [state.isDirty, state.isValid, state.isSubmitting]}
+            >
+              {([isDirty, isValid, isSubmitting]) => (
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={!isDirty || !isValid || isSubmitting}
+                  form="register"
+                >
+                  {isSubmitting ? '...' : 'Sign up'}
+                </Button>
+              )}
+            </form.Subscribe>
           </CardFooter>
         </Card>
       </div>
